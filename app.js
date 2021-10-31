@@ -1,4 +1,9 @@
-const fs = require('fs');
+
+// fs = requires('fs') has been removed as we will no longer need this for this file. 
+// We replaced it with the below  code in  const generateSite
+// like this const generateSite = require('./utils/generate-site'); or we can destructure the object 
+//const fs = require('fs');
+const { writeFile, copyFile } = require('./utils/generate-site');
 const inquirer = require('inquirer');
 const generatePage = require('./src/page-template');
 
@@ -125,18 +130,47 @@ Add a New Project
       }
     });
 };
-
 promptUser()
+  .then(promptProject)
+  .then(portfolioData => {
+      return generatePage(PortfolioData);
+  })
+  .then(pageHTML => {
+      return writeFile(pageHTML);
+  })
+  .then(writeFileResponse => {
+      console.log(writeFileResponse);
+      return copyFile();
+  })
+  .then(copyFileResponse => {
+      console.log(copyFileResponse);
+  })
+  .catch(err => {
+      console.log(err);
+  })
+
+// The code above was refactored from the one below here
+/*promptUser()
   .then(promptProject)
   .then(portfolioData => {
     const pageHTML = generatePage(portfolioData);
 
-    fs.writeFile('./index.html', pageHTML, err => {
+    fs.writeFile('./dist/index.html', pageHTML, err => {
       if (err) throw new Error(err);
 
       console.log('Page created! Check out index.html in this directory to see it!');
+
+      fs.copyFile('./src/styles.css', './dist/style.css', err => {
+          if (err) {
+              console.log(err);
+              return;
+          }
+          console.log('Style Sheet copied successfully');
+      })
     });
   });
+*/
+
 
 /*const fs = require('fs');
 const generatePage = require('./src/page-template');
